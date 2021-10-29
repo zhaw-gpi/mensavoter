@@ -1,43 +1,41 @@
 package ch.zhaw.gpi.mensavoter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import com.google.gson.Gson;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.ResourceUtils;
 
 @SpringBootApplication
 public class App implements CommandLineRunner {
+
+    @Autowired
+    private MenuManager menuManager;
+
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }
 
     @Override
-    public void run(String... args) throws Exception {
-
-        // In Konsole ausgeben
-        Menu m1 = new Menu("Favorite", "Poulet", "mit Kartoffeln");
-        m1.setPrice(7.0, 8.0, 14.0);
-        m1.printMenu();
-        
+    public void run(String... args) throws Exception {        
         // JSON lesen und ausgeben
-        Gson gson = new Gson();
-        File file = ResourceUtils.getFile("classpath:20201120.json");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        Reader reader = new InputStreamReader(fileInputStream, "UTF8");
-        
-        Menu[] menus = gson.fromJson(reader, Menu[].class);
-        reader.close();
-
-        for (int i=0; i<menus.length; i++) {
-            menus[i].printMenu();
+        menuManager.loadMenus("20201120");
+        Integer menuCount = menuManager.getMenuCount();
+        System.out.println("Anzahl Menus: " + menuCount);
+        for (int i = 0; i < menuCount; i++) {
+            menuManager.getMenu(i).printMenu();
             System.out.println("");
         }
+
+        // Liken und Likes ausgeben
+        menuManager.getMenu(0).like();
+        menuManager.getMenu(1).like();
+        menuManager.getMenu(1).like();
+        System.out.println("Likes von Menu 1: " + menuManager.getMenu(0).getLikes());
+        System.out.println("Likes von Menu 2: " + menuManager.getMenu(1).getLikes());
+
+        // Kommentare erfassen und ausgeben
+        menuManager.getMenu(0).addComment("Chicken wie Schuhsohle");
+        menuManager.getMenu(0).addComment("Auch Trockenreis braucht Wasser!!");
+        System.out.println(menuManager.getMenu(0).getComments());
     }
 }
