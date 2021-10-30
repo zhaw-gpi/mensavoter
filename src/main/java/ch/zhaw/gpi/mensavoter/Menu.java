@@ -2,9 +2,14 @@ package ch.zhaw.gpi.mensavoter;
 
 import java.util.ArrayList;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Menu {
 	
 	private String type;
+	@Id
 	private String title;
 	private String description;
 	private double [] prices = new double[3];
@@ -24,13 +29,6 @@ public class Menu {
 		prices[0] = stud;
 		prices[1] = intern;
 		prices[2] = extern;
-	}
-
-	public void printMenu() {
-		System.out.println("Typ: "+type);
-		System.out.println("Titel: "+title);
-		System.out.println("Beschreibung: "+description);
-		System.out.println("Preise: "+prices[0]+" STUD, "+prices[1]+" INT, "+prices[2]+" EXT");
 	}
 	
 	public int getLikes() {
