@@ -1,9 +1,11 @@
 package ch.zhaw.gpi.mensavoter;
 
 import java.util.ArrayList;
+import java.util.StringJoiner;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
 
 @Entity
 public class Menu {
@@ -65,5 +67,19 @@ public class Menu {
 	
 	public String getDescription() {
 		return description;
+	}
+
+	public String getNiceOutput(){
+		StringJoiner joiner = new StringJoiner(System.lineSeparator());
+		joiner.add(title + " (" + type + ")");
+		joiner.add("	" + description);
+		joiner.add("	Preise in CHF: " + getPrices());
+		joiner.add("	" + likes + " Like" + (likes == 1 ? "" : "s"));
+		if(comments.size() > 0){
+			joiner.add("	Kommentare: ");
+			comments.forEach(com -> joiner.add("	  - " + com));
+		}
+		joiner.add("");
+		return joiner.toString();
 	}
 }
